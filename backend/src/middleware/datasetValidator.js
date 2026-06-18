@@ -3,11 +3,13 @@ const validateDataSet = (req, res, next) => {
     title,
     department,
     sector,
-    formats,
-    update_frequency,
+    dataFormats,
+    updateFrequency,
     description,
     classification,
   } = req.body;
+  console.log(req.body);
+  
 
   if (!title) {
     return res.status(422).json({
@@ -26,14 +28,15 @@ const validateDataSet = (req, res, next) => {
       message: "Sector is required",
     });
   }
+console.log(dataFormats.length);
 
-  if (!formats || formats.length === 0) {
+  if (!dataFormats || dataFormats.length === 0) {
     return res.status(422).json({
       message: "Select at one format",
     });
   }
 
-  if (!update_frequency) {
+  if (!updateFrequency) {
     return res.status(422).json({
       message: "Update frequency is required",
     });
