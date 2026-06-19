@@ -6,6 +6,7 @@ import DatasetModal from "../components/DatasetModal";
 import AddDataset from "../components/AddDataset";
 
 export default function DataCatalog() {
+    const baseUrl = import.meta.env.VITE_REACT_APP_API_URL;
     const [datasets, setDatasets] = useState<Dataset[]>([]);
     const [search, setSearch] = useState("");
     const [filterSector, setSector] = useState("");
@@ -26,24 +27,19 @@ export default function DataCatalog() {
     ]);
 
     const getSectors = () => {
-        fetch("http://localhost:3000/api/sectors")
+        fetch(baseUrl + "/api/sectors")
             .then(res => res.json())
             .then(data => {
                 setSectors(data.data);
             });
     };
-    // const getRefreshData = () => {
-    //     getFilterDatasets()
-    // };
     const getFilterDatasets = async () => {
         const params = new URLSearchParams();
-
         if (search) params.append("search", search);
         if (filterSector) params.append("sector", filterSector);
         if (classification) params.append("classification", classification);
-
         const res = await fetch(
-            `http://localhost:3000/api/datasets?${params.toString()}`,
+            baseUrl + `/api/datasets?${params.toString()}`,
             {
                 cache: "no-store"
             }

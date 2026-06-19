@@ -4,6 +4,7 @@ export default function AddDataset({
   sectors,
   onSuccess
 }: any) {
+  const baseUrl = import.meta.env.VITE_REACT_APP_API_URL;
   const sectorList = sectors || [];
   const [form, setForm] = useState({
     title: "",
@@ -54,7 +55,7 @@ export default function AddDataset({
     };
     try {
       const response = await fetch(
-        "http://localhost:3000/api/datasets",
+        baseUrl + "/api/datasets",
         {
           method: "POST",
           headers: {
