@@ -5,7 +5,6 @@ interface Props {
     close: () => void;
 }
 export default function DatasetModal({ id, close }: Props) {
-    debugger
     const baseUrl = import.meta.env.VITE_REACT_APP_API_URL;
     const [dataset, setDataset] = useState<Dataset | null>(null);
     useEffect(() => {
