@@ -1,4 +1,5 @@
 import type { Dataset } from "../types/dataset";
+
 type Props = {
   datasets: Dataset[];
   sectors: string[];
@@ -8,8 +9,6 @@ type Props = {
   setSector: (value: string) => void;
   classification: string;
   setClassification: (value: string) => void;
-  status: string;
-  setStatus: (value: string) => void;
 };
 
 export default function DatasetFilters({
@@ -19,16 +18,14 @@ export default function DatasetFilters({
   setSector,
   classification,
   setClassification,
-  status,
-  setStatus,
   sectors
 }: Props) {
   return (
     <div className="bg-white p-4 rounded-xl shadow mb-6">
-      <div className="grid md:grid-cols-4 gap-4">
+      <div className="grid md:grid-cols-3 gap-4">
         <input
           className="border p-2 rounded"
-          placeholder="Search title/description..."
+          placeholder="Search Title/Description..."
           value={search}
           onChange={(e) =>
             setSearch(e.target.value)
@@ -71,24 +68,6 @@ export default function DatasetFilters({
           </option>
           <option value="Confidential">
             Confidential
-          </option>
-        </select>
-        {/* Status */}
-        <select
-          className="border p-2 rounded"
-          value={status}
-          onChange={(e) =>
-            setStatus(e.target.value)
-          }
-        >
-          <option value="">
-            All Status
-          </option>
-          <option value="active">
-            Active
-          </option>
-          <option value="inactive">
-            Inactive
           </option>
         </select>
       </div>

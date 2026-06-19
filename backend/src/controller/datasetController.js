@@ -35,16 +35,12 @@ const getDatasetById = async (req, res, next) => {
   }
 };
 // ****************************Add Data Set *******************************//
-const addDataset = async (req, res, next) => {
-  console.log("*******************");
-
+const addDataset = async (req, res, next) => {  
   try {
-
     const newDataset =
       await datasetService.addDataset(
         req.body
       );
-
     res.status(201).json({
       message:
         "Dataset registered successfully",

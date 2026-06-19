@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from 'sonner';
 export default function AddDataset({
   sectors,
   onSuccess
@@ -8,8 +9,8 @@ export default function AddDataset({
     title: "",
     department: "",
     sector: "",
-    dataFormats: [] as string[],
-    updateFrequency: "",
+    formats: [] as string[],
+    update_frequency: "",
     coverageLevel: "",
     description: "",
     classification: "",
@@ -30,14 +31,14 @@ export default function AddDataset({
   const handleFormatChange = (format: string) => {
     setForm(prev => ({
       ...prev,
-      dataFormats:
-        prev.dataFormats.includes(format)
+      formats:
+        prev.formats.includes(format)
           ?
-          prev.dataFormats.filter(
+          prev.formats.filter(
             f => f !== format
           )
           :
-          [...prev.dataFormats, format]
+          [...prev.formats, format]
     }));
   };
   const handleSubmit = async (
@@ -64,187 +65,191 @@ export default function AddDataset({
       );
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(
-          error.message || "Failed"
-        );
+        throw new Error(error.message || "Failed");
       }
-      alert("Dataset Added");
+      const result = await response.json();
+
       setForm({
         title: "",
         department: "",
         sector: "",
-        dataFormats: [],
-        updateFrequency: "",
+        formats: [],
+        update_frequency: "",
         coverageLevel: "",
         description: "",
         classification: "",
         tags: ""
       });
+      toast.success("Data Saved Successfully");
       if (onSuccess) {
-        onSuccess();
+        onSuccess(result);
       }
     }
     catch (error: any) {
-      alert(error.message);
+      toast.warning(error.message);
     }
   };
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">
-        Add Dataset
-      </h1>
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-4"
-      >
-        <input
-          type="text"
-          name="title"
-          placeholder="Title"
-          value={form.title}
-          onChange={handleChange}
-          required
-          className="w-full border p-2 rounded"
-        />
-        <input
-          type="text"
-          name="department"
-          placeholder="Department"
-          value={form.department}
-          onChange={handleChange}
-          required
-          className="w-full border p-2 rounded"
-        />
-        <select
-          name="sector"
-          value={form.sector}
-          onChange={handleChange}
-          required
-          className="w-full border p-2 rounded"
+    <>
+      <div className="max-w-4xl mx-auto p-6">
+        <h1 className="text-3xl font-bold mb-6">
+          Add New Record
+        </h1>
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4"
         >
-          <option value="">
-            Select Sector
-          </option>
-          {
-            sectorList.map((sector: string) => (
-              <option
-                key={sector}
-                value={sector}
-              >
-                {sector}
-              </option>
-            ))
-          }
-        </select>
-        <div>
-          <label className="font-semibold">
-            Data Formats
-          </label>
-          <div className="flex gap-4 mt-2 flex-wrap">
+          <input
+            type="text"
+            name="title"
+            placeholder="Title"
+            value={form.title}
+            onChange={handleChange}
+            className="w-full border p-2 rounded invalid:border-red-500"
+          />
+          <input
+            type="text"
+            name="department"
+            placeholder="Department"
+            value={form.department}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          />
+          <select
+            name="sector"
+            value={form.sector}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          >
+            <option value="">
+              Select Sector
+            </option>
             {
-              [
-                "CSV",
-                "XLSX",
-                "JSON",
-                "API",
-                "PDF",
-                "GeoJSON"
-              ].map(format => (
-                <label
-                  key={format}
-                  className="flex gap-2"
+              sectorList.map((sector: string) => (
+                <option
+                  key={sector}
+                  value={sector}
                 >
-                  <input
-                    type="checkbox"
-                    checked={
-                      form.dataFormats.includes(format)
-                    }
-                    onChange={() =>
-                      handleFormatChange(format)
-                    }
-                  />
-                  {format}
-                </label>
+                  {sector}
+                </option>
               ))
             }
+          </select>
+          <div>
+            <label className="font-semibold">
+              Data Formats
+            </label>
+            <div className="flex gap-4 mt-2 flex-wrap">
+              {
+                [
+                  "CSV",
+                  "XLSX",
+                  "JSON",
+                  "API",
+                  "PDF",
+                  "GeoJSON"
+                ].map(format => (
+                  <label
+                    key={format}
+                    className="flex gap-2"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={
+                        form.formats.includes(format)
+                      }
+                      onChange={() =>
+                        handleFormatChange(format)
+                      }
+                    />
+                    {format}
+                  </label>
+                ))
+              }
+            </div>
           </div>
-        </div>
-        <select
-          name="updateFrequency"
-          value={form.updateFrequency}
-          onChange={handleChange}
-          required
-          className="w-full border p-2 rounded"
-        >
-          <option value="">
-            Update Frequency
-          </option>
-          <option>Daily</option>
-          <option>Monthly</option>
-          <option>Quarterly</option>
-          <option>Annual</option>
-          <option>Seasonal</option>
-          <option>One-time</option>
-        </select>
-        <select
-          name="coverageLevel"
-          value={form.coverageLevel}
-          onChange={handleChange}
-          required
-          className="w-full border p-2 rounded"
-        >
-          <option value="">
-            Coverage Level
-          </option>
-          <option>Village</option>
-          <option>Block</option>
-          <option>District</option>
-          <option>Division</option>
-          <option>State</option>
-        </select>
-        <textarea
-          name="description"
-          placeholder="Description"
-          value={form.description}
-          onChange={handleChange}
-          required
-          rows={5}
-          className="w-full border p-2 rounded"
-        />
-        <select
-          name="classification"
-          value={form.classification}
-          onChange={handleChange}
-          required
-          className="w-full border p-2 rounded"
-        >
-          <option value="">
-            Classification
-          </option>
-          <option>
-            Public
-          </option>
-          <option>
-            Restricted
-          </option>
-          <option>
-            Confidential
-          </option>
-        </select>
-        <input
-          type="text"
-          name="tags"
-          placeholder="health, survey, agriculture"
-          value={form.tags}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-        />
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-6 py-2 rounded"
-        >
-          Save Dataset
-        </button>      </form>
-    </div>
+          <select
+            name="update_frequency"
+            value={form.update_frequency}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          >
+            <option value="">
+              Select Update Frequency
+            </option>
+            <option>Daily</option>
+            <option>Monthly</option>
+            <option>Quarterly</option>
+            <option>Annual</option>
+            <option>Seasonal</option>
+            <option>One-time</option>
+          </select>
+          <select
+            name="coverageLevel"
+            value={form.coverageLevel}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          >
+            <option value="">
+              Select Coverage Level
+            </option>
+            <option>Village</option>
+            <option>Block</option>
+            <option>District</option>
+            <option>Division</option>
+            <option>State</option>
+          </select>
+          <textarea
+            name="description"
+            placeholder="Description"
+            value={form.description}
+            onChange={handleChange}
+            rows={5}
+            className="w-full border p-2 rounded"
+          />
+          <select
+            name="classification"
+            value={form.classification}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          >
+            <option value="">
+              Select Classification
+            </option>
+            <option>
+              Public
+            </option>
+            <option>
+              Restricted
+            </option>
+            <option>
+              Confidential
+            </option>
+          </select>
+          <input
+            type="text"
+            name="tags"
+            placeholder="Health, Land"
+            value={form.tags}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          />
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              className="
+      bg-blue-600
+      hover:bg-blue-700
+      text-white
+      px-6
+      py-2
+      rounded
+      shadow
+    "
+            >
+              Save
+            </button>
+          </div>    </form>
+      </div></>
   );
 }

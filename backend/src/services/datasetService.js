@@ -13,8 +13,6 @@ const getAllDataSets = (query) => {
     status,
     search
   } = query;
-  console.log(query);
-
   if (sector) {
     result = result.filter(
       (item) =>
